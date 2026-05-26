@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Plus, UserCheck, Clock, Edit2, Trash2, Loader2, PlayCircle, StopCircle } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -54,21 +55,31 @@ export default function Staff() {
   const clockIn = async (s) => {
     const saved = localStorage.getItem('wash_crm_location');
     const loc = saved ? JSON.parse(saved) : null;
-    await base44.entities.Shift.create({
-      location_id: loc?.id,
-      staff_id: s.id,
-      staff_name: s.full_name,
-      clock_in: new Date().toISOString(),
-      status: 'active'
-    });
-    loadData();
+    try {
+      await base44.entities.Shift.create({
+        location_id: loc?.id,
+        staff_id: s.id,
+        staff_name: s.full_name,
+        clock_in: new Date().toISOString(),
+        status: 'active'
+      });
+      toast.success(`${s.full_name} clocked in`);
+      loadData();
+    } catch (e) {
+      toast.error(`Clock in failed: ${e.message}`);
+    }
   };
 
   const clockOut = async (shift) => {
-    const clockOut = new Date().toISOString();
-    const mins = differenceInMinutes(new Date(), new Date(shift.clock_in));
-    await base44.entities.Shift.update(shift.id, { clock_out: clockOut, hours_worked: mins / 60, status: 'completed' });
-    loadData();
+    try {
+      const out = new Date().toISOString();
+      const mins = differenceInMinutes(new Date(), new Date(shift.clock_in));
+      await base44.entities.Shift.update(shift.id, { clock_out: out, hours_worked: mins / 60, status: 'completed' });
+      toast.success('Clocked out successfully');
+      loadData();
+    } catch (e) {
+      toast.error(`Clock out failed: ${e.message}`);
+    }
   };
 
   const getActiveShift = (staffId) => shifts.find(sh => sh.staff_id === staffId && sh.status === 'active');
