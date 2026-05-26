@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Car, BarChart3, Users, CreditCard, Gift, UserCheck, Shield, ArrowRight, Check, Star, MapPin } from 'lucide-react';
+import { Car, BarChart3, Users, CreditCard, Gift, UserCheck, Shield, ArrowRight, Check, Star, MapPin, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import TerritoryMap from '@/components/TerritoryMap';
 
 const FEATURES = [
   { icon: Car, title: 'Smart Check-Ins', desc: 'Customers check in from their phone. Real-time queue management for your team.' },
@@ -57,16 +58,42 @@ export default function Landing() {
             Check-ins, customer management, memberships, loyalty rewards, staff tracking and analytics — all in one beautiful platform.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link to="/dashboard/checkins">
+            <Link to="/onboarding">
               <Button size="lg" className="bg-white text-primary hover:bg-white/90 font-semibold gap-2">
-                Start Free Trial <ArrowRight className="w-4 h-4" />
+                Claim Your Territory <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10">
-              Watch Demo
-            </Button>
+            <Link to="/demo">
+              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 gap-2">
+                <Play className="w-4 h-4" /> Try Demo
+              </Button>
+            </Link>
           </div>
         </motion.div>
+      </div>
+
+      {/* Territory Map Section */}
+      <div className="max-w-5xl mx-auto px-4 py-16">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary rounded-full px-4 py-1.5 text-sm font-semibold mb-4">
+            <MapPin className="w-3.5 h-3.5" /> Houston Exclusive Launch
+          </div>
+          <h2 className="text-3xl font-bold text-foreground mb-3">Claim Your Territory Before It's Gone</h2>
+          <p className="text-muted-foreground max-w-xl mx-auto">We operate on an exclusive zone model — only one WashCRM operator per area. Early operators lock in their territory permanently.</p>
+        </div>
+        <TerritoryMap />
+        <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
+          <Link to="/onboarding">
+            <Button size="lg" className="gradient-header border-0 text-white hover:opacity-90 gap-2">
+              Claim My Territory <ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
+          <Link to="/demo">
+            <Button size="lg" variant="outline" className="gap-2">
+              <Play className="w-4 h-4" /> Try Demo Sandbox
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Features */}
