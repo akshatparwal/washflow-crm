@@ -28,7 +28,9 @@ export default function CustomerHome() {
   const [searched, setSearched] = useState(false);
 
   useEffect(() => {
-    base44.entities.Location.filter({ is_active: true, subscription_status: 'active' }).then(setLocations).catch(() => {});
+    base44.functions.invoke('publicLocations', {})
+      .then(res => setLocations((res.data.locations || []).filter(l => l.subscription_status === 'active')))
+      .catch(() => {});
   }, []);
 
   const handleSearch = async () => {
@@ -36,16 +38,16 @@ export default function CustomerHome() {
     setSearching(true);
     setSearched(true);
     try {
-      const all = await base44.entities.Location.filter({ is_active: true });
+      const res = await base44.functions.invoke('publicLocations', {});
+      const all = res.data.locations || [];
       const q = search.toLowerCase();
-      const filtered = all.filter(l =>
+      setResults(all.filter(l =>
         l.city?.toLowerCase().includes(q) ||
         l.state?.toLowerCase().includes(q) ||
         l.zip?.includes(q) ||
         l.name?.toLowerCase().includes(q) ||
         l.address?.toLowerCase().includes(q)
-      );
-      setResults(filtered);
+      ));
     } finally {
       setSearching(false);
     }

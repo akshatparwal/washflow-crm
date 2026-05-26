@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Car, CheckCircle, Clock, Star, Gift, ChevronRight, Loader2 } from 'lucide-react';
+import { Car, CheckCircle, Clock, Gift, ChevronRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,7 +15,7 @@ export default function CheckInPage() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [step, setStep] = useState('form'); // form | confirm | success
+  const [step, setStep] = useState('form');
   const [queuePos, setQueuePos] = useState(null);
   const [pointsEarned, setPointsEarned] = useState(0);
 
@@ -25,22 +25,18 @@ export default function CheckInPage() {
     service_id: '', payment_method: 'in_person', notes: ''
   });
 
-  useEffect(() => {
-    loadLocationData();
-  }, []);
+  useEffect(() => { loadLocationData(); }, []);
 
   const loadLocationData = async () => {
     setLoading(true);
     try {
-      const locations = await base44.entities.Location.filter({ slug: slug || 'demo', is_active: true });
-      if (locations.length > 0) {
-        const loc = locations[0];
-        setLocation(loc);
-        const svcs = await base44.entities.Service.filter({ location_id: loc.id, is_active: true }, 'sort_order');
-        setServices(svcs);
+      const res = await base44.functions.invoke('publicLocations', { slug: slug || 'demo' });
+      if (res.data.location) {
+        setLocation(res.data.location);
+        setServices(res.data.services || []);
       }
     } catch (e) {
-      // silently handle auth/network errors — location will be null and show "Not Found"
+      // location stays null → shows "Not Found"
     }
     setLoading(false);
   };
@@ -50,82 +46,30 @@ export default function CheckInPage() {
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-    // Find or create customer
-    let customer = null;
-    const existing = await base44.entities.Customer.filter({ phone: form.phone, location_id: location.id });
-    if (existing.length > 0) {
-      customer = existing[0];
-      await base44.entities.Customer.update(customer.id, { is_new: false, last_visit: new Date().toISOString() });
-    } else {
-      customer = await base44.entities.Customer.create({
-        full_name: form.full_name, phone: form.phone, email: form.email,
-        location_id: location.id, is_new: true, last_visit: new Date().toISOString()
-      });
-    }
-
-    // Get queue position
-    const activeCheckins = await base44.entities.CheckIn.filter({
-      location_id: location.id,
-      check_in_date: new Date().toISOString().split('T')[0]
-    });
-    const active = activeCheckins.filter(c => !['done','cancelled'].includes(c.status));
-    const pos = active.length + 1;
-    setQueuePos(pos);
-
-    const pts = Math.round((selectedService?.price || 0) * (location.loyalty_points_per_dollar || 1));
-    setPointsEarned(pts);
-
-    await base44.entities.CheckIn.create({
-      location_id: location.id,
-      customer_id: customer.id,
-      customer_name: form.full_name,
-      customer_phone: form.phone,
-      customer_email: form.email,
-      vehicle_make: form.vehicle_make,
-      vehicle_model: form.vehicle_model,
-      vehicle_color: form.vehicle_color,
-      vehicle_license_plate: form.vehicle_license_plate,
-      service_id: form.service_id,
-      service_name: selectedService?.name,
-      service_price: selectedService?.price,
-      service_duration: selectedService?.duration_minutes,
-      status: 'checked_in',
-      queue_position: pos,
-      payment_method: form.payment_method,
-      payment_status: form.payment_method === 'online' ? 'paid' : 'pending',
-      loyalty_points_earned: pts,
-      notes: form.notes,
-      check_in_date: new Date().toISOString().split('T')[0]
-    });
-
-    // Update customer loyalty
-    const newPoints = (customer.loyalty_points || 0) + pts;
-    if (customer) {
-      await base44.entities.Customer.update(customer.id, {
-        total_visits: (customer.total_visits || 0) + 1,
-        total_spent: (customer.total_spent || 0) + (selectedService?.price || 0),
-        loyalty_points: newPoints
-      });
-    }
-
-    // Write loyalty transaction so reporting works
-    if (pts > 0) {
-      await base44.entities.LoyaltyTransaction.create({
+      const res = await base44.functions.invoke('publicCheckIn', {
         location_id: location.id,
-        customer_id: customer.id,
-        type: 'earned',
-        points: pts,
-        description: `${selectedService?.name} — check-in`,
-        balance_after: newPoints
+        customer_name: form.full_name,
+        customer_phone: form.phone,
+        customer_email: form.email,
+        vehicle_make: form.vehicle_make,
+        vehicle_model: form.vehicle_model,
+        vehicle_color: form.vehicle_color,
+        vehicle_license_plate: form.vehicle_license_plate,
+        service_id: form.service_id,
+        service_name: selectedService?.name,
+        service_price: selectedService?.price,
+        service_duration: selectedService?.duration_minutes,
+        payment_method: form.payment_method,
+        notes: form.notes,
+        loyalty_points_per_dollar: location.loyalty_points_per_dollar || 1,
       });
-    }
-
-    setSubmitting(false);
-    setStep('success');
+      setQueuePos(res.data.queue_position);
+      setPointsEarned(res.data.points_earned || 0);
+      setStep('success');
     } catch (e) {
-      setSubmitting(false);
       alert('Something went wrong saving your check-in. Please ask staff to check you in manually.');
     }
+    setSubmitting(false);
   };
 
   const isFormValid = form.full_name && form.phone && form.vehicle_make && form.vehicle_model && form.vehicle_color && form.service_id;
@@ -323,7 +267,10 @@ export default function CheckInPage() {
 
               <p className="text-sm text-muted-foreground mt-4">Please wait in the lobby or your vehicle. A staff member will come to you when your car is ready.</p>
 
-              <Button variant="outline" className="mt-4" onClick={() => { setStep('form'); setForm({ full_name:'',phone:'',email:'',vehicle_make:'',vehicle_model:'',vehicle_color:'',vehicle_license_plate:'',service_id:'',payment_method:'in_person',notes:'' }); }}>
+              <Button variant="outline" className="mt-4" onClick={() => {
+                setStep('form');
+                setForm({ full_name:'', phone:'', email:'', vehicle_make:'', vehicle_model:'', vehicle_color:'', vehicle_license_plate:'', service_id:'', payment_method:'in_person', notes:'' });
+              }}>
                 New Check-In
               </Button>
             </motion.div>

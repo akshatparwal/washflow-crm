@@ -46,7 +46,7 @@ export default function Analytics() {
 
   const today = new Date().toISOString().split('T')[0];
   const todayCheckins = checkins.filter(c => c.check_in_date === today);
-  const todayRevenue = todayCheckins.filter(c => c.status === 'done').reduce((s, c) => s + (c.service_price || 0), 0);
+  const todayRevenue = todayCheckins.filter(c => c.payment_status === 'paid' || c.status === 'done').reduce((s, c) => s + (c.service_price || 0), 0);
   const activeQueue = checkins.filter(c => c.check_in_date === today && ['checked_in','waiting','in_progress'].includes(c.status)).length;
   const ratings = checkins.filter(c => c.rating).map(c => c.rating);
   const avgRating = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length) : 0;
@@ -57,8 +57,8 @@ export default function Analytics() {
   const lastWeekStart = subDays(thisWeekStart, 7);
   const thisWeekCheckins = checkins.filter(c => new Date(c.created_date) >= thisWeekStart);
   const lastWeekCheckins = checkins.filter(c => new Date(c.created_date) >= lastWeekStart && new Date(c.created_date) < thisWeekStart);
-  const thisWeekRev = thisWeekCheckins.filter(c => c.status === 'done').reduce((s, c) => s + (c.service_price || 0), 0);
-  const lastWeekRev = lastWeekCheckins.filter(c => c.status === 'done').reduce((s, c) => s + (c.service_price || 0), 0);
+  const thisWeekRev = thisWeekCheckins.filter(c => c.payment_status === 'paid' || c.status === 'done').reduce((s, c) => s + (c.service_price || 0), 0);
+  const lastWeekRev = lastWeekCheckins.filter(c => c.payment_status === 'paid' || c.status === 'done').reduce((s, c) => s + (c.service_price || 0), 0);
   const revTrend = lastWeekRev > 0 ? ((thisWeekRev - lastWeekRev) / lastWeekRev) * 100 : 0;
 
   // Daily chart data (last 7 days)
@@ -68,7 +68,7 @@ export default function Analytics() {
     const dayCheckins = checkins.filter(c => c.check_in_date === dateStr);
     return {
       date: format(d, 'EEE'),
-      revenue: dayCheckins.filter(c => c.status === 'done').reduce((s, c) => s + (c.service_price || 0), 0),
+      revenue: dayCheckins.filter(c => c.payment_status === 'paid' || c.status === 'done').reduce((s, c) => s + (c.service_price || 0), 0),
       customers: [...new Set(dayCheckins.map(c => c.customer_phone))].length,
     };
   });
@@ -79,7 +79,7 @@ export default function Analytics() {
     if (!c.service_name) return;
     if (!serviceMap[c.service_name]) serviceMap[c.service_name] = { name: c.service_name, count: 0, revenue: 0 };
     serviceMap[c.service_name].count++;
-    if (c.status === 'done') serviceMap[c.service_name].revenue += (c.service_price || 0);
+    if (c.payment_status === 'paid' || c.status === 'done') serviceMap[c.service_name].revenue += (c.service_price || 0);
   });
   const topServices = Object.values(serviceMap).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
 

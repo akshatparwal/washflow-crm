@@ -14,11 +14,14 @@ export default function FindWash() {
   const [selectedState, setSelectedState] = useState('');
 
   useEffect(() => {
-    base44.entities.Location.filter({ is_active: true }).then(locs => {
-      setLocations(locs);
-      setFiltered(locs);
-      setLoading(false);
-    }).catch(() => setLoading(false));
+    base44.functions.invoke('publicLocations', {})
+      .then(res => {
+        const locs = res.data.locations || [];
+        setLocations(locs);
+        setFiltered(locs);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   useEffect(() => {

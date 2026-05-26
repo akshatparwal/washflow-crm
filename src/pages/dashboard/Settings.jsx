@@ -19,24 +19,25 @@ export default function Settings() {
     const init = async () => {
       const me = await base44.auth.me().catch(() => null);
       setUser(me);
+      // Always load fresh from DB — localStorage may have stale/partial data
+      const allLocs = await base44.entities.Location.list('name').catch(() => []);
+      setAllLocations(allLocs);
+
       const saved = localStorage.getItem('wash_crm_location');
+      let activeLoc = null;
       if (saved) {
-        const loc = JSON.parse(saved);
-        // Re-fetch fresh data from DB to avoid stale localStorage
-        const fresh = await base44.entities.Location.filter({ id: loc.id }).catch(() => [loc]);
-        const freshLoc = fresh[0] || loc;
-        setLocation(freshLoc);
-        populateForm(freshLoc);
+        const cached = JSON.parse(saved);
+        activeLoc = allLocs.find(l => l.id === cached.id) || allLocs[0];
       } else if (me) {
-        // No localStorage — try to find location by owner
-        const owned = await base44.entities.Location.filter({ owner_id: me.id }).catch(() => []);
-        if (owned.length > 0) {
-          localStorage.setItem('wash_crm_location', JSON.stringify(owned[0]));
-          setLocation(owned[0]);
-          populateForm(owned[0]);
-        }
+        activeLoc = allLocs.find(l => l.owner_id === me.id) || allLocs[0];
+      } else {
+        activeLoc = allLocs[0];
       }
-      loadLocations();
+      if (activeLoc) {
+        localStorage.setItem('wash_crm_location', JSON.stringify(activeLoc));
+        setLocation(activeLoc);
+        populateForm(activeLoc);
+      }
     };
     init();
   }, []);
@@ -50,11 +51,6 @@ export default function Settings() {
       loyalty_points_per_dollar: loc.loyalty_points_per_dollar ?? 1,
       loyalty_redemption_rate: loc.loyalty_redemption_rate ?? 100,
     });
-  };
-
-  const loadLocations = async () => {
-    const locs = await base44.entities.Location.filter({}, 'name');
-    setAllLocations(locs);
   };
 
   const handleSave = async () => {
@@ -71,13 +67,7 @@ export default function Settings() {
   const selectLocation = (loc) => {
     localStorage.setItem('wash_crm_location', JSON.stringify(loc));
     setLocation(loc);
-    setForm({
-      name: loc.name || '', slug: loc.slug || '', address: loc.address || '',
-      city: loc.city || '', state: loc.state || '', zip: loc.zip || '',
-      phone: loc.phone || '', email: loc.email || '',
-      loyalty_points_per_dollar: loc.loyalty_points_per_dollar || 1,
-      loyalty_redemption_rate: loc.loyalty_redemption_rate || 100,
-    });
+    populateForm(loc);
   };
 
   const checkinUrl = location ? `${window.location.origin}/checkin?location=${location.slug}` : '';
