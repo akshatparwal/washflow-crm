@@ -296,8 +296,16 @@ function LocationCard({ loc }) {
         </div>
       )}
       <div className="flex items-center gap-1 mb-4">
-        {[1,2,3,4,5].map(s => <Star key={s} className="w-3 h-3 fill-amber-400 text-amber-400" />)}
-        <span className="text-xs text-muted-foreground ml-1">5.0</span>
+        {loc.avg_rating ? (
+          <>
+            {[1,2,3,4,5].map(s => (
+              <Star key={s} className={`w-3 h-3 ${s <= Math.round(loc.avg_rating) ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`} />
+            ))}
+            <span className="text-xs text-muted-foreground ml-1">{loc.avg_rating.toFixed(1)}</span>
+          </>
+        ) : (
+          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">New</span>
+        )}
       </div>
       <div className="mt-auto">
         <Link to={`/checkin?location=${loc.slug}`} className="block">

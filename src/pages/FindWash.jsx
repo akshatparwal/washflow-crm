@@ -161,16 +161,24 @@ function LocationDetailCard({ loc }) {
       <div className="h-2 gradient-header" />
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-start gap-3 mb-4">
-          <div className="w-12 h-12 rounded-xl gradient-header flex items-center justify-center flex-shrink-0">
-            <Car className="w-6 h-6 text-white" />
+        <div className="w-12 h-12 rounded-xl gradient-header flex items-center justify-center flex-shrink-0">
+          <Car className="w-6 h-6 text-white" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="font-bold text-foreground truncate">{loc.name}</div>
+          <div className="flex items-center gap-1 mt-0.5">
+            {loc.avg_rating ? (
+              <>
+                {[1,2,3,4,5].map(s => (
+                  <Star key={s} className={`w-3 h-3 ${s <= Math.round(loc.avg_rating) ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`} />
+                ))}
+                <span className="text-xs text-muted-foreground ml-1">{loc.avg_rating.toFixed(1)}</span>
+              </>
+            ) : (
+              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">New</span>
+            )}
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="font-bold text-foreground truncate">{loc.name}</div>
-            <div className="flex items-center gap-1 mt-0.5">
-              {[1,2,3,4,5].map(s => <Star key={s} className="w-3 h-3 fill-amber-400 text-amber-400" />)}
-              <span className="text-xs text-muted-foreground ml-1">5.0 · Verified</span>
-            </div>
-          </div>
+        </div>
         </div>
 
         <div className="space-y-2 mb-4 flex-1">

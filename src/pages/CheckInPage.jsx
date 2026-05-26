@@ -321,7 +321,7 @@ export default function CheckInPage() {
                 <div className="text-sm text-muted-foreground mt-1">Payment: <span className="font-semibold text-foreground">{form.payment_method === 'online' ? 'Paid Online' : 'Pay at Counter'}</span></div>
               </div>
 
-              <p className="text-sm text-muted-foreground mt-4">Please wait in your vehicle or our waiting area. We'll notify you when ready!</p>
+              <p className="text-sm text-muted-foreground mt-4">Please wait in the lobby or your vehicle. A staff member will come to you when your car is ready.</p>
 
               <Button variant="outline" className="mt-4" onClick={() => { setStep('form'); setForm({ full_name:'',phone:'',email:'',vehicle_make:'',vehicle_model:'',vehicle_color:'',vehicle_license_plate:'',service_id:'',payment_method:'in_person',notes:'' }); }}>
                 New Check-In

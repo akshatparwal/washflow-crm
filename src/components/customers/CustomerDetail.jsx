@@ -109,7 +109,13 @@ export default function CustomerDetail({ customer, onClose, onUpdate }) {
             {loading ? (
               <div className="flex items-center justify-center py-10"><Loader2 className="w-5 h-5 animate-spin text-primary" /></div>
             ) : checkins.length === 0 ? (
-              <div className="text-center py-10 text-muted-foreground text-sm">No visit history</div>
+              <div className="text-center py-10">
+                <Car className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground font-medium">No visit records found</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {customer.total_visits > 0 ? `${customer.total_visits} visit${customer.total_visits !== 1 ? 's' : ''} recorded in summary — detail records may predate this system.` : 'This customer has no check-ins yet.'}
+                </p>
+              </div>
             ) : (
               <div className="space-y-3">
                 {checkins.map(ci => (

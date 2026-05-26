@@ -57,7 +57,7 @@ export default function Layout() {
           </div>
           {!collapsed && (
             <div>
-              <div className="font-bold text-foreground text-sm leading-tight">WashCRM</div>
+              <div className="font-bold text-foreground text-sm leading-tight">WashNow</div>
               <div className="text-xs text-muted-foreground">Car Wash Platform</div>
             </div>
           )}
@@ -170,7 +170,7 @@ export default function Layout() {
             <div className="w-7 h-7 rounded-lg gradient-header flex items-center justify-center">
               <Car className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-sm">WashCRM</span>
+            <span className="font-bold text-sm">WashNow</span>
           </div>
         </div>
         <main className="flex-1 overflow-y-auto">

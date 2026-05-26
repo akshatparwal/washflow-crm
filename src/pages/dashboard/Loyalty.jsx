@@ -53,7 +53,8 @@ export default function Loyalty() {
     ? customers.reduce((s, c) => s + (c.loyalty_points || 0), 0)
     : totalPointsIssued;
 
-  const loc = location;
+  // Always show a numeric earn rate — never a dash
+  const earnRate = location?.loyalty_points_per_dollar ?? 1;
 
   return (
     <div className="p-4 md:p-6">
@@ -81,7 +82,7 @@ export default function Loyalty() {
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
           <Star className="w-5 h-5 text-blue-500 mb-2" />
-          <div className="text-2xl font-bold text-foreground">{loc ? `${loc.loyalty_points_per_dollar || 1}pt/$` : '–'}</div>
+          <div className="text-2xl font-bold text-foreground">{earnRate}pt/$</div>
           <div className="text-xs text-muted-foreground">Earn Rate</div>
         </div>
       </div>

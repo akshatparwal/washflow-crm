@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Save, MapPin, Link, Loader2, Copy, Check, ExternalLink } from 'lucide-react';
+import { Save, MapPin, Link, Loader2, Copy, Check, ExternalLink, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 
 export default function Settings() {
   const [location, setLocation] = useState(null);
+  const [originalSlug, setOriginalSlug] = useState('');
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -41,6 +42,7 @@ export default function Settings() {
   }, []);
 
   const populateForm = (loc) => {
+    setOriginalSlug(loc.slug || '');
     setForm({
       name: loc.name || '', slug: loc.slug || '', address: loc.address || '',
       city: loc.city || '', state: loc.state || '', zip: loc.zip || '',
@@ -132,7 +134,16 @@ export default function Settings() {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div><Label>Business Name *</Label><Input className="mt-1" value={form.name || ''} onChange={e => setForm({...form, name: e.target.value})} /></div>
-            <div><Label>URL Slug *</Label><Input className="mt-1" placeholder="my-car-wash" value={form.slug || ''} onChange={e => setForm({...form, slug: e.target.value})} /></div>
+            <div>
+              <Label>URL Slug *</Label>
+              <Input className="mt-1" placeholder="my-car-wash" value={form.slug || ''} onChange={e => setForm({...form, slug: e.target.value})} />
+              {form.slug && form.slug !== originalSlug && (
+                <div className="mt-1.5 flex items-start gap-1.5 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                  <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+                  <span>Changing your slug will break all existing check-in links and QR codes.</span>
+                </div>
+              )}
+            </div>
           </div>
           <div><Label>Address</Label><Input className="mt-1" value={form.address || ''} onChange={e => setForm({...form, address: e.target.value})} /></div>
           <div className="grid grid-cols-3 gap-3">
