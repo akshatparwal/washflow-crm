@@ -1,0 +1,66 @@
+{
+  "name": "Customer",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "location_id": {
+      "type": "string"
+    },
+    "total_visits": {
+      "type": "number",
+      "default": 0
+    },
+    "total_spent": {
+      "type": "number",
+      "default": 0
+    },
+    "loyalty_points": {
+      "type": "number",
+      "default": 0
+    },
+    "membership_id": {
+      "type": "string"
+    },
+    "membership_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "active",
+        "expired",
+        "cancelled"
+      ],
+      "default": "none"
+    },
+    "membership_expires": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "avg_rating": {
+      "type": "number"
+    },
+    "last_visit": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_new": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "full_name",
+    "phone",
+    "location_id"
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "name": "Location",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Car wash business name"
+    },
+    "slug": {
+      "type": "string",
+      "description": "Unique URL slug for customer check-in"
+    },
+    "address": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "zip": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "owner_id": {
+      "type": "string",
+      "description": "User ID of the owner"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "trial",
+        "active",
+        "expired",
+        "cancelled"
+      ],
+      "default": "trial"
+    },
+    "subscription_plan": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "default": "starter"
+    },
+    "subscription_expires": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "loyalty_points_per_dollar": {
+      "type": "number",
+      "default": 1
+    },
+    "loyalty_points_per_visit": {
+      "type": "number",
+      "default": 10
+    },
+    "loyalty_redemption_rate": {
+      "type": "number",
+      "default": 100,
+      "description": "Points needed for $1 off"
+    },
+    "settings": {
+      "type": "object",
+      "description": "Location-specific settings"
+    }
+  },
+  "required": [
+    "name",
+    "slug"
+  ]
+}

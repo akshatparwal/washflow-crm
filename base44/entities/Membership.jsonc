@@ -1,0 +1,42 @@
+{
+  "name": "Membership",
+  "type": "object",
+  "properties": {
+    "location_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "price_monthly": {
+      "type": "number"
+    },
+    "included_services": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Service IDs included"
+    },
+    "visit_limit": {
+      "type": "number",
+      "description": "Max visits per month, null = unlimited"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "color": {
+      "type": "string",
+      "default": "#1A6FD4"
+    }
+  },
+  "required": [
+    "location_id",
+    "name",
+    "price_monthly"
+  ]
+}

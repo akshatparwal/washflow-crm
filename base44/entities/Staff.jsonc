@@ -1,0 +1,45 @@
+{
+  "name": "Staff",
+  "type": "object",
+  "properties": {
+    "location_id": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "manager",
+        "technician"
+      ],
+      "default": "technician"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "hire_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "hourly_rate": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "location_id",
+    "full_name",
+    "role"
+  ]
+}

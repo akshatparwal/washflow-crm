@@ -1,0 +1,116 @@
+{
+  "name": "CheckIn",
+  "type": "object",
+  "properties": {
+    "location_id": {
+      "type": "string"
+    },
+    "customer_id": {
+      "type": "string"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "customer_phone": {
+      "type": "string"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "vehicle_make": {
+      "type": "string"
+    },
+    "vehicle_model": {
+      "type": "string"
+    },
+    "vehicle_color": {
+      "type": "string"
+    },
+    "vehicle_license_plate": {
+      "type": "string"
+    },
+    "service_id": {
+      "type": "string"
+    },
+    "service_name": {
+      "type": "string"
+    },
+    "service_price": {
+      "type": "number"
+    },
+    "service_duration": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "checked_in",
+        "waiting",
+        "in_progress",
+        "ready",
+        "done",
+        "cancelled"
+      ],
+      "default": "checked_in"
+    },
+    "queue_position": {
+      "type": "number"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "online",
+        "in_person"
+      ],
+      "default": "in_person"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid",
+        "refunded"
+      ],
+      "default": "pending"
+    },
+    "loyalty_points_earned": {
+      "type": "number",
+      "default": 0
+    },
+    "loyalty_discount_applied": {
+      "type": "number",
+      "default": 0
+    },
+    "membership_used": {
+      "type": "boolean",
+      "default": false
+    },
+    "notes": {
+      "type": "string"
+    },
+    "staff_id": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number"
+    },
+    "rating_comment": {
+      "type": "string"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "check_in_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "location_id",
+    "customer_name",
+    "customer_phone",
+    "service_name",
+    "service_price"
+  ]
+}

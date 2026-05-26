@@ -1,0 +1,32 @@
+{
+  "name": "Vehicle",
+  "type": "object",
+  "properties": {
+    "customer_id": {
+      "type": "string"
+    },
+    "location_id": {
+      "type": "string"
+    },
+    "make": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string"
+    },
+    "license_plate": {
+      "type": "string"
+    },
+    "year": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "customer_id",
+    "make",
+    "model"
+  ]
+}

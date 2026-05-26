@@ -1,0 +1,39 @@
+{
+  "name": "LoyaltyTransaction",
+  "type": "object",
+  "properties": {
+    "location_id": {
+      "type": "string"
+    },
+    "customer_id": {
+      "type": "string"
+    },
+    "check_in_id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "earned",
+        "redeemed",
+        "adjusted"
+      ],
+      "default": "earned"
+    },
+    "points": {
+      "type": "number"
+    },
+    "description": {
+      "type": "string"
+    },
+    "balance_after": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "location_id",
+    "customer_id",
+    "type",
+    "points"
+  ]
+}
