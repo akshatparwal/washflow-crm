@@ -81,7 +81,7 @@ export default function CheckIns() {
   });
 
   const activeCount = checkins.filter(c => ['checked_in','waiting','in_progress'].includes(c.status)).length;
-  const todayRevenue = checkins.filter(c => c.status === 'done').reduce((sum, c) => sum + (c.service_price || 0), 0);
+  const todayRevenue = checkins.filter(c => c.status === 'done' || c.payment_status === 'paid').reduce((sum, c) => sum + (c.service_price || 0), 0);
   const checkinUrl = location ? `${window.location.origin}/checkin?location=${location.slug}` : '';
 
   const copyUrl = () => {
