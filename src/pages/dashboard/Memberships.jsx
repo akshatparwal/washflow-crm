@@ -128,7 +128,7 @@ export default function Memberships() {
             <DialogTitle>{editing ? 'Edit Plan' : 'Create Membership Plan'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 mt-2">
-            <div><Label>Plan Name *</Label><Input className="mt-1" placeholder="e.g. Gold Monthly" value={form.name} onChange={e => setForm({...form, name: e.target.value})} /></div>
+            <div><Label>Plan Name *</Label><Input className="mt-1" placeholder="e.g. Gold Monthly" autoComplete="off" value={form.name} onChange={e => setForm({...form, name: e.target.value})} /></div>
             <div><Label>Description</Label><Textarea className="mt-1" placeholder="What's included..." value={form.description} onChange={e => setForm({...form, description: e.target.value})} rows={2} /></div>
             <div className="grid grid-cols-2 gap-3">
               <div><Label>Monthly Price ($) *</Label><Input className="mt-1" type="number" placeholder="29.99" value={form.price_monthly} onChange={e => setForm({...form, price_monthly: e.target.value})} /></div>
@@ -144,7 +144,7 @@ export default function Memberships() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" onClick={() => setShowForm(false)} className="flex-1">Cancel</Button>
-              <Button onClick={handleSave} className="flex-1" disabled={!form.name || !form.price_monthly}>Save Plan</Button>
+              <Button onClick={handleSave} className="flex-1" disabled={!form.name.trim() || !String(form.price_monthly).trim()}>Save Plan</Button>
             </div>
           </div>
         </DialogContent>

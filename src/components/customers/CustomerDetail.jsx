@@ -19,7 +19,11 @@ export default function CustomerDetail({ customer, onClose, onUpdate }) {
 
   const loadHistory = async () => {
     setLoading(true);
-    const data = await base44.entities.CheckIn.filter({ customer_id: customer.id }, '-created_date', 50);
+    let data = await base44.entities.CheckIn.filter({ customer_id: customer.id }, '-created_date', 50);
+    // Fallback: search by phone for legacy/demo records not linked by customer_id
+    if (data.length === 0 && customer.phone) {
+      data = await base44.entities.CheckIn.filter({ customer_phone: customer.phone }, '-created_date', 50);
+    }
     setCheckins(data);
     setLoading(false);
   };

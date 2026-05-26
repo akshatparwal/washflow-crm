@@ -31,12 +31,16 @@ export default function CheckInPage() {
 
   const loadLocationData = async () => {
     setLoading(true);
-    const locations = await base44.entities.Location.filter({ slug: slug || 'demo', is_active: true });
-    if (locations.length > 0) {
-      const loc = locations[0];
-      setLocation(loc);
-      const svcs = await base44.entities.Service.filter({ location_id: loc.id, is_active: true }, 'sort_order');
-      setServices(svcs);
+    try {
+      const locations = await base44.entities.Location.filter({ slug: slug || 'demo', is_active: true });
+      if (locations.length > 0) {
+        const loc = locations[0];
+        setLocation(loc);
+        const svcs = await base44.entities.Service.filter({ location_id: loc.id, is_active: true }, 'sort_order');
+        setServices(svcs);
+      }
+    } catch (e) {
+      // silently handle auth/network errors — location will be null and show "Not Found"
     }
     setLoading(false);
   };
@@ -45,6 +49,7 @@ export default function CheckInPage() {
 
   const handleSubmit = async () => {
     setSubmitting(true);
+    try {
     // Find or create customer
     let customer = null;
     const existing = await base44.entities.Customer.filter({ phone: form.phone, location_id: location.id });
@@ -117,6 +122,10 @@ export default function CheckInPage() {
 
     setSubmitting(false);
     setStep('success');
+    } catch (e) {
+      setSubmitting(false);
+      alert('Something went wrong saving your check-in. Please ask staff to check you in manually.');
+    }
   };
 
   const isFormValid = form.full_name && form.phone && form.vehicle_make && form.vehicle_model && form.vehicle_color && form.service_id;
