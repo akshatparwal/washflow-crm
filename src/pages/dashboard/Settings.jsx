@@ -15,21 +15,40 @@ export default function Settings() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
-    const saved = localStorage.getItem('wash_crm_location');
-    if (saved) {
-      const loc = JSON.parse(saved);
-      setLocation(loc);
-      setForm({
-        name: loc.name || '', slug: loc.slug || '', address: loc.address || '',
-        city: loc.city || '', state: loc.state || '', zip: loc.zip || '',
-        phone: loc.phone || '', email: loc.email || '',
-        loyalty_points_per_dollar: loc.loyalty_points_per_dollar || 1,
-        loyalty_redemption_rate: loc.loyalty_redemption_rate || 100,
-      });
-    }
-    loadLocations();
+    const init = async () => {
+      const me = await base44.auth.me().catch(() => null);
+      setUser(me);
+      const saved = localStorage.getItem('wash_crm_location');
+      if (saved) {
+        const loc = JSON.parse(saved);
+        // Re-fetch fresh data from DB to avoid stale localStorage
+        const fresh = await base44.entities.Location.filter({ id: loc.id }).catch(() => [loc]);
+        const freshLoc = fresh[0] || loc;
+        setLocation(freshLoc);
+        populateForm(freshLoc);
+      } else if (me) {
+        // No localStorage — try to find location by owner
+        const owned = await base44.entities.Location.filter({ owner_id: me.id }).catch(() => []);
+        if (owned.length > 0) {
+          localStorage.setItem('wash_crm_location', JSON.stringify(owned[0]));
+          setLocation(owned[0]);
+          populateForm(owned[0]);
+        }
+      }
+      loadLocations();
+    };
+    init();
   }, []);
+
+  const populateForm = (loc) => {
+    setForm({
+      name: loc.name || '', slug: loc.slug || '', address: loc.address || '',
+      city: loc.city || '', state: loc.state || '', zip: loc.zip || '',
+      phone: loc.phone || '', email: loc.email || '',
+      loyalty_points_per_dollar: loc.loyalty_points_per_dollar ?? 1,
+      loyalty_redemption_rate: loc.loyalty_redemption_rate ?? 100,
+    });
+  };
 
   const loadLocations = async () => {
     const locs = await base44.entities.Location.filter({}, 'name');

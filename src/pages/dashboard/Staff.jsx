@@ -23,14 +23,15 @@ export default function Staff() {
     setLoading(true);
     const saved = localStorage.getItem('wash_crm_location');
     const loc = saved ? JSON.parse(saved) : null;
-    const filter = {};
-    if (loc) filter.location_id = loc.id;
+    const filter = loc ? { location_id: loc.id } : {};
     const [s, sh] = await Promise.all([
       base44.entities.Staff.filter(filter, 'full_name'),
-      base44.entities.Shift.filter(filter, '-created_date', 50)
+      base44.entities.Shift.filter({}, '-created_date', 100)
     ]);
     setStaff(s);
-    setShifts(sh);
+    // Filter shifts client-side to match staff in this location
+    const staffIds = new Set(s.map(x => x.id));
+    setShifts(sh.filter(x => staffIds.has(x.staff_id)));
     setLoading(false);
   };
 

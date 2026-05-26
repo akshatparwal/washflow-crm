@@ -13,9 +13,15 @@ export default function Loyalty() {
 
   useEffect(() => {
     const saved = localStorage.getItem('wash_crm_location');
-    if (saved) setLocation(JSON.parse(saved));
+    if (saved) {
+      const loc = JSON.parse(saved);
+      setLocation(loc);
+    }
     loadData();
   }, []);
+
+  // Derive earn rate directly from loaded customers' location if state is missing
+
 
   const loadData = async () => {
     setLoading(true);
@@ -42,6 +48,11 @@ export default function Loyalty() {
     return c.full_name?.toLowerCase().includes(q) || c.phone?.includes(q);
   });
 
+  // Recompute totalPointsIssued from customer loyalty_points as fallback when no transactions exist
+  const totalPointsIssuedFallback = transactions.length === 0
+    ? customers.reduce((s, c) => s + (c.loyalty_points || 0), 0)
+    : totalPointsIssued;
+
   const loc = location;
 
   return (
@@ -55,7 +66,7 @@ export default function Loyalty() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">
           <Gift className="w-5 h-5 text-amber-500 mb-2" />
-          <div className="text-2xl font-bold text-foreground">{totalPointsIssued.toLocaleString()}</div>
+          <div className="text-2xl font-bold text-foreground">{totalPointsIssuedFallback.toLocaleString()}</div>
           <div className="text-xs text-muted-foreground">Total Points Issued</div>
         </div>
         <div className="bg-card rounded-xl border border-border p-4 shadow-sm">

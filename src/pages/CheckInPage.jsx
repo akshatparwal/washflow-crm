@@ -94,11 +94,24 @@ export default function CheckInPage() {
     });
 
     // Update customer loyalty
+    const newPoints = (customer.loyalty_points || 0) + pts;
     if (customer) {
       await base44.entities.Customer.update(customer.id, {
         total_visits: (customer.total_visits || 0) + 1,
         total_spent: (customer.total_spent || 0) + (selectedService?.price || 0),
-        loyalty_points: (customer.loyalty_points || 0) + pts
+        loyalty_points: newPoints
+      });
+    }
+
+    // Write loyalty transaction so reporting works
+    if (pts > 0) {
+      await base44.entities.LoyaltyTransaction.create({
+        location_id: location.id,
+        customer_id: customer.id,
+        type: 'earned',
+        points: pts,
+        description: `${selectedService?.name} — check-in`,
+        balance_after: newPoints
       });
     }
 

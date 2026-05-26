@@ -41,12 +41,17 @@ const AuthenticatedApp = () => {
     );
   }
 
+  const PUBLIC_PATHS = ['/', '/washnow', '/find-wash', '/checkin', '/for-business', '/demo', '/onboarding', '/my-account'];
+  const isPublicPath = PUBLIC_PATHS.some(p => window.location.pathname === p || window.location.pathname.startsWith('/checkin'));
+
   if (authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      navigateToLogin();
-      return null;
+      if (!isPublicPath) {
+        navigateToLogin();
+        return null;
+      }
     }
   }
 
