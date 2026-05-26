@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Car, BarChart3, Users, CreditCard, Gift, UserCheck, Shield, ArrowRight, Check, Star } from 'lucide-react';
+import { Car, BarChart3, Users, CreditCard, Gift, UserCheck, Shield, ArrowRight, Check, Star, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
@@ -31,10 +31,13 @@ export default function Landing() {
             <span className="font-bold text-xl text-foreground">WashCRM</span>
           </div>
           <div className="flex items-center gap-3">
+            <Link to="/">
+              <Button variant="ghost" size="sm" className="gap-2 text-xs"><MapPin className="w-3.5 h-3.5" /> Find a Wash</Button>
+            </Link>
             <Link to="/dashboard/checkins">
               <Button variant="ghost" size="sm">Sign In</Button>
             </Link>
-            <Link to="/dashboard/checkins">
+            <Link to="/setup">
               <Button size="sm" className="gradient-header border-0 text-white hover:opacity-90">Get Started Free</Button>
             </Link>
           </div>

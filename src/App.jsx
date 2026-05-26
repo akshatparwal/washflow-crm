@@ -8,6 +8,8 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
 // Pages
 import Landing from './pages/Landing';
+import CustomerHome from './pages/CustomerHome';
+import FindWash from './pages/FindWash';
 import SetupLocation from './pages/SetupLocation';
 import CheckInPage from './pages/CheckInPage';
 import Layout from './components/Layout';
@@ -47,7 +49,10 @@ const AuthenticatedApp = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Landing />} />
+      <Route path="/" element={<CustomerHome />} />
+      <Route path="/washnow" element={<CustomerHome />} />
+      <Route path="/find-wash" element={<FindWash />} />
+      <Route path="/for-business" element={<Landing />} />
       <Route path="/checkin" element={<CheckInPage />} />
       <Route path="/setup" element={<SetupLocation />} />
 
