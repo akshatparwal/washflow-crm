@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { Car, MapPin, Search, Star, Clock, Gift, Shield, ChevronRight, Sparkles, Phone, Droplets, Zap, CheckCircle } from 'lucide-react';
+import { Car, MapPin, Search, Star, Clock, Gift, Shield, ChevronRight, Sparkles, Phone, Droplets, Zap, CheckCircle, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -66,8 +66,10 @@ export default function CustomerHome() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Link to="/dashboard/checkins">
-              <Button variant="ghost" size="sm" className="text-muted-foreground text-xs">Business Login</Button>
+            <Link to="/my-account">
+              <Button variant="ghost" size="sm" className="text-muted-foreground text-xs gap-1.5">
+                <User className="w-3.5 h-3.5" /> My Account
+              </Button>
             </Link>
             <Link to="/find-wash">
               <Button size="sm" className="gradient-header border-0 text-white hover:opacity-90 gap-2">

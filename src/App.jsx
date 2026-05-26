@@ -14,6 +14,7 @@ import SetupLocation from './pages/SetupLocation';
 import CheckInPage from './pages/CheckInPage';
 import Onboarding from './pages/Onboarding';
 import Demo from './pages/Demo';
+import CustomerPortal from './pages/CustomerPortal';
 import Layout from './components/Layout';
 
 // Dashboard pages
@@ -59,6 +60,7 @@ const AuthenticatedApp = () => {
       <Route path="/setup" element={<SetupLocation />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/demo" element={<Demo />} />
+      <Route path="/my-account" element={<CustomerPortal />} />
 
       {/* Owner dashboard */}
       <Route element={<Layout />}>
