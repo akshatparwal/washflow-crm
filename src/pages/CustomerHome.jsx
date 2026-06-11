@@ -1,23 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { Car, MapPin, Search, Star, Clock, Gift, Shield, ChevronRight, Sparkles, Phone, Droplets, Zap, CheckCircle, User } from 'lucide-react';
+import { Car, MapPin, Search, Star, Clock, Gift, Shield, ChevronRight, Sparkles, Phone, Droplets, Zap, CheckCircle, User, Layers, Wind, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const WHY_US = [
   { icon: Zap, title: 'Fast & Efficient', desc: 'Check in from your phone. Skip the line and track your car in real time.' },
-  { icon: Gift, title: 'Earn Rewards', desc: 'Collect loyalty points on every visit and redeem them for free washes.' },
+  { icon: Gift, title: 'Earn Loyalty Rewards', desc: 'Earn loyalty points on every visit — exclusively at our featured WashCRM partner locations. Redeem them for free washes and discounts.' },
   { icon: Shield, title: 'Trusted Pros', desc: 'All locations are vetted, insured, and rated by real customers.' },
   { icon: Droplets, title: 'Eco-Friendly', desc: 'Water-recycling systems and eco-safe products used at every location.' },
 ];
 
 const SERVICES_PREVIEW = [
-  { name: 'Basic Wash', price: 'From $15', time: '15 min', color: 'bg-blue-50 border-blue-200 text-blue-700' },
-  { name: 'Silver Wash', price: 'From $30', time: '30 min', color: 'bg-cyan-50 border-cyan-200 text-cyan-700' },
-  { name: 'Gold Detail', price: 'From $50', time: '50 min', color: 'bg-amber-50 border-amber-200 text-amber-700' },
-  { name: 'Full Interior Detail', price: 'From $80', time: '75 min', color: 'bg-purple-50 border-purple-200 text-purple-700' },
+  { name: 'Basic Car Wash', price: 'From $15', time: '15 min', color: 'bg-blue-50 border-blue-200 text-blue-700', icon: Droplets, bookings: '2.4k+ bookings' },
+  { name: 'Mat Cleaning', price: 'From $20', time: '20 min', color: 'bg-cyan-50 border-cyan-200 text-cyan-700', icon: Layers, bookings: '1.8k+ bookings' },
+  { name: 'Interior Detail', price: 'From $50', time: '50 min', color: 'bg-amber-50 border-amber-200 text-amber-700', icon: Sparkles, bookings: '1.2k+ bookings' },
+  { name: 'Trunk Cleaning', price: 'From $25', time: '25 min', color: 'bg-purple-50 border-purple-200 text-purple-700', icon: Trash2, bookings: '980+ bookings' },
 ];
 
 export default function CustomerHome() {
@@ -26,6 +26,14 @@ export default function CustomerHome() {
   const [searching, setSearching] = useState(false);
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
+  const [heroIcon, setHeroIcon] = useState('car'); // 'car' | 'shower'
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHeroIcon(prev => prev === 'car' ? 'shower' : 'car');
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     base44.functions.invoke('publicLocations', {})
@@ -73,11 +81,6 @@ export default function CustomerHome() {
                 <User className="w-3.5 h-3.5" /> My Account
               </Button>
             </Link>
-            <Link to="/find-wash">
-              <Button size="sm" className="gradient-header border-0 text-white hover:opacity-90 gap-2">
-                <MapPin className="w-3.5 h-3.5" /> Find a Wash
-              </Button>
-            </Link>
           </div>
         </div>
       </nav>
@@ -87,7 +90,12 @@ export default function CustomerHome() {
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 0%, transparent 50%), radial-gradient(circle at 80% 20%, white 0%, transparent 40%)' }} />
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="relative z-10">
           <div className="inline-flex items-center gap-2 bg-white/20 text-white rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-            <Sparkles className="w-3.5 h-3.5" /> Book. Track. Shine.
+            <AnimatePresence mode="wait">
+              <motion.span key={heroIcon} initial={{ opacity: 0, scale: 0.6, rotate: -10 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} exit={{ opacity: 0, scale: 0.6, rotate: 10 }} transition={{ duration: 0.3 }} className="flex items-center">
+                {heroIcon === 'car' ? <Car className="w-3.5 h-3.5" /> : <Droplets className="w-3.5 h-3.5" />}
+              </motion.span>
+            </AnimatePresence>
+            Book. Track. Shine.
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 leading-tight max-w-3xl mx-auto">
             Find the Best Car Wash<br />Near You
@@ -145,8 +153,8 @@ export default function CustomerHome() {
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-foreground">Featured Locations</h2>
-              <p className="text-muted-foreground text-sm mt-1">Top-rated car washes in our network</p>
+              <h2 className="text-2xl font-bold text-foreground">Hand-Picked Locations</h2>
+              <p className="text-muted-foreground text-sm mt-1">Carefully selected WashCRM partner washes — loyalty rewards available at all of them</p>
             </div>
             <Link to="/find-wash">
               <Button variant="outline" size="sm" className="gap-2">View All <ChevronRight className="w-3.5 h-3.5" /></Button>
@@ -166,19 +174,20 @@ export default function CustomerHome() {
       <div className="bg-gray-50 py-14 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-2xl font-bold text-foreground mb-2">Popular Services</h2>
-            <p className="text-muted-foreground">Find the perfect wash for your vehicle</p>
+            <h2 className="text-2xl font-bold text-foreground mb-2">What Our Customers Book Most</h2>
+            <p className="text-muted-foreground">The most-loved services across our partner locations</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {SERVICES_PREVIEW.map((svc, i) => (
               <motion.div key={svc.name} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}
                 className={`border-2 rounded-2xl p-5 text-center ${svc.color}`}>
-                <Droplets className="w-7 h-7 mx-auto mb-3 opacity-70" />
+                <svc.icon className="w-7 h-7 mx-auto mb-3 opacity-70" />
                 <div className="font-bold text-sm mb-1">{svc.name}</div>
                 <div className="font-semibold text-lg mb-1">{svc.price}</div>
-                <div className="flex items-center justify-center gap-1 text-xs opacity-70">
+                <div className="flex items-center justify-center gap-1 text-xs opacity-70 mb-1">
                   <Clock className="w-3 h-3" /> {svc.time}
                 </div>
+                <div className="text-xs font-medium opacity-60">{svc.bookings}</div>
               </motion.div>
             ))}
           </div>
