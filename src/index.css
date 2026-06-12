@@ -6,36 +6,36 @@
 
 @layer base {
   :root {
-    --background: 210 20% 96%;
-    --foreground: 215 28% 17%;
+    --background: 220 20% 97%;
+    --foreground: 220 30% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 215 28% 17%;
+    --card-foreground: 220 30% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 215 28% 17%;
-    --primary: 213 82% 46%;
+    --popover-foreground: 220 30% 10%;
+    --primary: 217 91% 35%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 213 30% 93%;
-    --secondary-foreground: 215 28% 17%;
-    --muted: 210 20% 94%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 185 74% 40%;
+    --secondary: 217 30% 92%;
+    --secondary-foreground: 220 30% 10%;
+    --muted: 220 18% 93%;
+    --muted-foreground: 220 14% 46%;
+    --accent: 191 85% 36%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
+    --destructive: 0 84% 58%;
     --destructive-foreground: 0 0% 98%;
-    --border: 214 20% 88%;
-    --input: 214 20% 88%;
-    --ring: 213 82% 46%;
+    --border: 220 18% 86%;
+    --input: 220 18% 86%;
+    --ring: 217 91% 35%;
     --radius: 0.625rem;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 215 28% 17%;
-    --sidebar-primary: 213 82% 46%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 213 30% 95%;
-    --sidebar-accent-foreground: 213 82% 46%;
-    --sidebar-border: 214 20% 91%;
-    --sidebar-ring: 213 82% 46%;
-    --gradient-start: 213 82% 46%;
-    --gradient-end: 185 74% 40%;
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 92%;
+    --sidebar-primary: 191 85% 44%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 222 40% 18%;
+    --sidebar-accent-foreground: 210 40% 92%;
+    --sidebar-border: 222 40% 18%;
+    --sidebar-ring: 191 85% 44%;
+    --gradient-start: 217 91% 35%;
+    --gradient-end: 191 85% 36%;
   }
 
   .dark {
@@ -79,11 +79,11 @@
 }
 
 .gradient-header {
-  background: linear-gradient(135deg, #1A6FD4 0%, #0EB5C1 100%);
+  background: linear-gradient(135deg, #0A3D8F 0%, #0891B2 100%);
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #1A6FD4 0%, #0EB5C1 100%);
+  background: linear-gradient(135deg, #0A3D8F 0%, #0891B2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
