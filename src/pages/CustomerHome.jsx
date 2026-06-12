@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Car, MapPin, Search, Star, Clock, Gift, Shield, ChevronRight, Sparkles, Phone, Droplets, Zap, CheckCircle, User, Layers, Wind, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -21,12 +21,10 @@ const SERVICES_PREVIEW = [
 ];
 
 export default function CustomerHome() {
+  const navigate = useNavigate();
   const [locations, setLocations] = useState([]);
   const [search, setSearch] = useState('');
-  const [searching, setSearching] = useState(false);
-  const [results, setResults] = useState([]);
-  const [searched, setSearched] = useState(false);
-  const [heroIcon, setHeroIcon] = useState('car'); // 'car' | 'shower'
+  const [heroIcon, setHeroIcon] = useState('car');
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -41,24 +39,9 @@ export default function CustomerHome() {
       .catch(() => {});
   }, []);
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     if (!search.trim()) return;
-    setSearching(true);
-    setSearched(true);
-    try {
-      const res = await base44.functions.invoke('publicLocations', {});
-      const all = res.data.locations || [];
-      const q = search.toLowerCase();
-      setResults(all.filter(l =>
-        l.city?.toLowerCase().includes(q) ||
-        l.state?.toLowerCase().includes(q) ||
-        l.zip?.includes(q) ||
-        l.name?.toLowerCase().includes(q) ||
-        l.address?.toLowerCase().includes(q)
-      ));
-    } finally {
-      setSearching(false);
-    }
+    navigate(`/find-wash?q=${encodeURIComponent(search.trim())}`);
   };
 
   return (
@@ -117,39 +100,16 @@ export default function CustomerHome() {
                   onKeyDown={e => e.key === 'Enter' && handleSearch()}
                 />
               </div>
-              <Button onClick={handleSearch} disabled={searching} className="gradient-header border-0 text-white hover:opacity-90 rounded-xl px-5">
-                {searching ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Search className="w-4 h-4" />}
+              <Button onClick={handleSearch} className="gradient-header border-0 text-white hover:opacity-90 rounded-xl px-5">
+                <Search className="w-4 h-4" />
               </Button>
             </div>
           </div>
         </motion.div>
       </div>
 
-      {/* Search Results */}
-      <AnimatePresence>
-        {searched && (
-          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            className="max-w-5xl mx-auto px-4 -mt-6">
-            <div className="bg-card rounded-2xl border border-border shadow-xl p-6 mb-8">
-              <h2 className="font-bold text-foreground mb-4 text-lg">
-                {results.length > 0 ? `${results.length} location${results.length !== 1 ? 's' : ''} found` : 'No locations found nearby'}
-              </h2>
-              {results.length === 0 ? (
-                <p className="text-muted-foreground text-sm">Try searching a different city, zip code, or location name. New locations are added regularly!</p>
-              ) : (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {results.map(loc => (
-                    <LocationCard key={loc.id} loc={loc} />
-                  ))}
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Featured Locations */}
-      {!searched && locations.length > 0 && (
+      {locations.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="flex items-center justify-between mb-6">
             <div>
