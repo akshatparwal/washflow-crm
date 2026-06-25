@@ -37,7 +37,7 @@ export default function BeforeAfterSlider() {
             <span className="gradient-text">MAGNIFICENT</span>
           </h2>
           <p className="text-muted-foreground text-sm md:text-base">
-            Slide across and watch your ride go from dirt-covered to dazzling — that's the WashNow difference.
+            Slide across and watch your ride go from dirt-covered to dazzling.
           </p>
         </div>
 
