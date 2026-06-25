@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback } from 'react';
 import { MoveHorizontal } from 'lucide-react';
 
-const BEFORE_IMG = 'https://images.unsplash.com/photo-1607992527470-ee2e26ae9f64?auto=format&fit=crop&w=1200&q=80';
-const AFTER_IMG = 'https://images.unsplash.com/photo-1607861716497-6560a7a9c0de?auto=format&fit=crop&w=1200&q=80';
+const BEFORE_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/92a71f7a3_generated_image.png';
+const AFTER_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/6269239c0_generated_image.png';
 
 export default function BeforeAfterSlider() {
   const [pos, setPos] = useState(50);
@@ -34,7 +34,7 @@ export default function BeforeAfterSlider() {
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-extrabold mb-2">
             <span className="text-gray-800">SEE THE </span>
-            <span className="text-cyan-600">TRANSFORMATION</span>
+            <span className="gradient-text">TRANSFORMATION</span>
           </h2>
           <p className="text-muted-foreground text-sm md:text-base">
             Drag the slider to see the difference our deep cleaning makes.
@@ -67,15 +67,15 @@ export default function BeforeAfterSlider() {
           </div>
 
           {/* Divider */}
-          <div className="absolute top-0 bottom-0 w-0.5 bg-white shadow-md" style={{ left: `${pos}%` }}>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center">
-              <MoveHorizontal className="w-5 h-5 text-gray-700" />
+          <div className="absolute top-0 bottom-0 w-1 shadow-md gradient-header" style={{ left: `${pos}%` }}>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11 h-11 rounded-full gradient-header shadow-lg flex items-center justify-center ring-2 ring-white">
+              <MoveHorizontal className="w-5 h-5 text-white" />
             </div>
           </div>
 
           {/* Labels */}
           <span className="absolute bottom-4 left-4 bg-gray-800/90 text-white text-xs font-semibold px-3 py-1.5 rounded-md">BEFORE</span>
-          <span className="absolute bottom-4 right-4 bg-cyan-600 text-white text-xs font-semibold px-3 py-1.5 rounded-md">AFTER</span>
+          <span className="absolute bottom-4 right-4 gradient-header text-white text-xs font-semibold px-3 py-1.5 rounded-md">AFTER</span>
         </div>
       </div>
     </section>
