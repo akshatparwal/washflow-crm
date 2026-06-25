@@ -109,6 +109,9 @@ export default function CustomerHome() {
         </motion.div>
       </div>
 
+      {/* Before / After Transformation */}
+      <BeforeAfterSlider />
+
       {/* Featured Locations */}
       {locations.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 py-12">
@@ -161,9 +164,6 @@ export default function CustomerHome() {
           </div>
         </div>
       </div>
-
-      {/* Before / After Transformation */}
-      <BeforeAfterSlider />
 
       {/* Why WashNow */}
       <div className="max-w-6xl mx-auto px-4 py-14">
