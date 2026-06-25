@@ -5,6 +5,7 @@ import { Car, MapPin, Search, Star, Clock, Gift, Shield, ChevronRight, Sparkles,
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
+import BeforeAfterSlider from '@/components/BeforeAfterSlider';
 
 const WHY_US = [
   { icon: Zap, title: 'Fast & Efficient', desc: 'Check in from your phone. Skip the line and track your car in real time.' },
@@ -160,6 +161,9 @@ export default function CustomerHome() {
           </div>
         </div>
       </div>
+
+      {/* Before / After Transformation */}
+      <BeforeAfterSlider />
 
       {/* Why WashNow */}
       <div className="max-w-6xl mx-auto px-4 py-14">
