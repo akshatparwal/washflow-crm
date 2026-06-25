@@ -1,8 +1,9 @@
 import { useState, useRef, useCallback } from 'react';
 import { MoveHorizontal } from 'lucide-react';
 
-const BEFORE_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/92a71f7a3_generated_image.png';
-const AFTER_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/6269239c0_generated_image.png';
+// Single car photo — the "dirty" look is produced with a CSS filter on the same image,
+// so dragging the slider transforms one car from muddy to clean.
+const CAR_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/6269239c0_generated_image.png';
 
 export default function BeforeAfterSlider() {
   const [pos, setPos] = useState(50);
@@ -52,18 +53,24 @@ export default function BeforeAfterSlider() {
           onTouchMove={onMove}
           onTouchEnd={onUp}
         >
-          {/* AFTER (full) */}
-          <img src={AFTER_IMG} alt="After wash" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
+          {/* AFTER — clean car (base layer) */}
+          <img src={CAR_IMG} alt="After wash" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
 
-          {/* BEFORE (clipped) */}
+          {/* BEFORE — same car with a muddy filter, clipped to the left of the slider */}
           <div className="absolute inset-0 overflow-hidden" style={{ width: `${pos}%` }}>
             <img
-              src={BEFORE_IMG}
+              src={CAR_IMG}
               alt="Before wash"
               className="absolute inset-0 h-full object-cover"
-              style={{ width: containerRef.current ? `${containerRef.current.offsetWidth}px` : '100%' }}
+              style={{
+                width: containerRef.current ? `${containerRef.current.offsetWidth}px` : '100%',
+                filter: 'sepia(0.7) saturate(1.6) hue-rotate(355deg) brightness(0.62) contrast(1.15)',
+              }}
               draggable={false}
             />
+            {/* muddy brown tint overlay */}
+            <div className="absolute inset-0 bg-[#5b4a3a]/45 mix-blend-multiply" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#6b5640]/30 to-transparent" />
           </div>
 
           {/* Divider */}
