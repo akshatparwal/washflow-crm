@@ -14,6 +14,7 @@ import WeeklyTrafficChart from '@/components/analytics/WeeklyTrafficChart';
 import RatingChart from '@/components/analytics/RatingChart';
 import MembershipChart from '@/components/analytics/MembershipChart';
 import StatusChart from '@/components/analytics/StatusChart';
+import ServiceTrendChart from '@/components/analytics/ServiceTrendChart';
 
 const isPaid = (c) => c.payment_status === 'paid' || c.status === 'done';
 
@@ -141,7 +142,27 @@ export default function Analytics() {
     });
     const statusData = Object.entries(statusMap).map(([key, value]) => ({ name: statusLabels[key] || key, value }));
 
-    return { stats, dailyData, serviceData, paymentData, topServicesData, weeklyData, ratingData, membershipData, statusData };
+    // Service popularity month-over-month (last 6 months)
+    const monthLabels = [];
+    const monthKeys = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - i);
+      monthKeys.push(d.toISOString().split('T')[0].slice(0, 7));
+      monthLabels.push(format(d, 'MMM'));
+    }
+    const trendSvcNames = topServicesData.slice(0, 5).map(s => s.name);
+    const serviceTrendData = monthKeys.map((mk, i) => {
+      const row = { month: monthLabels[i] };
+      trendSvcNames.forEach(name => { row[name] = 0; });
+      recent.forEach(c => {
+        if (!c.service_name || !c.check_in_date) return;
+        const ck = c.check_in_date.slice(0, 7);
+        if (ck === mk && trendSvcNames.includes(c.service_name)) row[c.service_name]++;
+      });
+      return row;
+    });
+
+    return { stats, dailyData, serviceData, paymentData, topServicesData, weeklyData, ratingData, membershipData, statusData, serviceTrendData, trendSvcNames };
   }, [checkins]);
 
   return (
@@ -178,10 +199,12 @@ export default function Analytics() {
             <WeeklyTrafficChart data={m.weeklyData} loading={false} />
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid lg:grid-cols-2 gap-5 mb-5">
             <RatingChart data={m.ratingData} loading={false} />
             <MembershipChart data={m.membershipData} loading={false} />
           </div>
+
+          <ServiceTrendChart data={m.serviceTrendData} services={m.trendSvcNames} loading={false} />
         </>
       )}
     </div>
