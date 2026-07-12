@@ -2,27 +2,25 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useState, useEffect } from 'react';
 import {
-  ClipboardList, Users, BarChart3, Settings, Car, Star,
+  ClipboardList, Users, BarChart3, Settings, Car,
   LogOut, ChevronLeft, ChevronRight, Shield, MapPin,
-  UserCheck, Clock, CreditCard, Gift, Menu, X
+  UserCheck, Menu
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { label: 'Check-ins', path: '/dashboard/checkins', icon: ClipboardList },
+  { label: 'Check-Ins', path: '/dashboard/checkins', icon: ClipboardList },
   { label: 'Customers', path: '/dashboard/customers', icon: Users },
-  { label: 'Analytics', path: '/dashboard/analytics', icon: BarChart3 },
-  { label: 'Memberships', path: '/dashboard/memberships', icon: CreditCard },
-  { label: 'Loyalty', path: '/dashboard/loyalty', icon: Gift },
+  { label: 'Services', path: '/dashboard/services', icon: Car },
+  { label: 'Reports', path: '/dashboard/analytics', icon: BarChart3 },
   { label: 'Staff', path: '/dashboard/staff', icon: UserCheck },
-  { label: 'Services', path: '/dashboard/services', icon: Star },
   { label: 'Settings', path: '/dashboard/settings', icon: Settings },
 ];
 
 const adminItems = [
   { label: 'All Locations', path: '/admin/locations', icon: MapPin },
-  { label: 'Platform Analytics', path: '/admin/analytics', icon: BarChart3 },
+  { label: 'Reports', path: '/admin/analytics', icon: BarChart3 },
   { label: 'Owners', path: '/admin/owners', icon: Shield },
 ];
 
