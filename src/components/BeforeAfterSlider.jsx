@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback } from 'react';
 import { MoveHorizontal } from 'lucide-react';
 
-const BEFORE_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/92a71f7a3_generated_image.png';
-const AFTER_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/6269239c0_generated_image.png';
+const BEFORE_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/f2255e873_generated_image.png';
+const AFTER_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/a03d30e82_generated_image.png';
 
 export default function BeforeAfterSlider() {
   const [pos, setPos] = useState(50);
@@ -37,7 +37,7 @@ export default function BeforeAfterSlider() {
             <span className="gradient-text">MAGNIFICENT</span>
           </h2>
           <p className="text-muted-foreground text-sm md:text-base">
-            Slide across and watch your ride go from dirt-covered to dazzling.
+            One truck, one wash. Slide left to see it clean — slide right to see it dirty.
           </p>
         </div>
 
@@ -74,8 +74,8 @@ export default function BeforeAfterSlider() {
           </div>
 
           {/* Labels */}
-          <span className="absolute bottom-4 left-4 bg-gray-800/90 text-white text-xs font-semibold px-3 py-1.5 rounded-md">BEFORE</span>
-          <span className="absolute bottom-4 right-4 gradient-header text-white text-xs font-semibold px-3 py-1.5 rounded-md">AFTER</span>
+          <span className="absolute bottom-4 left-4 bg-gray-800/90 text-white text-xs font-semibold px-3 py-1.5 rounded-md">DIRTY</span>
+          <span className="absolute bottom-4 right-4 gradient-header text-white text-xs font-semibold px-3 py-1.5 rounded-md">CLEAN</span>
         </div>
       </div>
     </section>
