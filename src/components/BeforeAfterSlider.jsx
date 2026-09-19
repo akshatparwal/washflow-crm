@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback } from 'react';
 import { MoveHorizontal } from 'lucide-react';
 
-const BEFORE_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/f2255e873_generated_image.png';
-const AFTER_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/a03d30e82_generated_image.png';
+const BEFORE_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/ef6860d62_generated_image.png';
+const AFTER_IMG = 'https://media.base44.com/images/public/6a15029471099b262af79afe/53ffc9c4b_generated_image.png';
 
 export default function BeforeAfterSlider() {
   const [pos, setPos] = useState(50);
