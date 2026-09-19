@@ -53,6 +53,43 @@ export default function FindWash() {
   const [selectedLoc, setSelectedLoc] = useState(null);
   const [locatingMe, setLocatingMe] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [webWashes, setWebWashes] = useState([]);
+  const [webLoading, setWebLoading] = useState(false);
+
+  // Fetch ALL real car washes in the searched area via live web search
+  const fetchWebWashes = async (query) => {
+    setWebLoading(true);
+    setWebWashes([]);
+    try {
+      const partnerNames = locations.map(l => l.name).filter(Boolean);
+      const res = await base44.integrations.Core.InvokeLLM({
+        prompt: `Search the web for car wash businesses in and around this area: "${query}". Include self-serve, automatic, tunnel, and detailing car washes. For each one, give the business name and its full street address, plus phone number and Google rating if available. ${partnerNames.length ? `Exclude these businesses (they are already listed separately): ${partnerNames.join(', ')}. ` : ''}Return up to 15 results, starting with the ones closest to the searched area.`,
+        add_context_from_internet: true,
+        model: 'gemini_3_flash',
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            washes: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  name: { type: 'string' },
+                  address: { type: 'string' },
+                  phone: { type: 'string' },
+                  rating: { type: 'number' }
+                },
+                required: ['name', 'address']
+              }
+            }
+          },
+          required: ['washes']
+        }
+      });
+      setWebWashes((res.washes || []).filter(w => w.name && w.address));
+    } catch {}
+    setWebLoading(false);
+  };
 
   // Geocode location addresses on load
   useEffect(() => {
@@ -76,6 +113,7 @@ export default function FindWash() {
         // Auto-geocode if URL has a ?q= param
         if (initialQ) {
           setGeocoding(true);
+          fetchWebWashes(initialQ);
           fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(initialQ)}&format=json&limit=1&countrycodes=us`)
             .then(r => r.json())
             .then(d => { if (d[0]) setCenter([parseFloat(d[0].lat), parseFloat(d[0].lon)]); })
@@ -104,6 +142,7 @@ export default function FindWash() {
     e?.preventDefault();
     if (!search.trim()) return;
     setGeocoding(true);
+    fetchWebWashes(search.trim());
     try {
       const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(search)}&format=json&limit=1&countrycodes=us`);
       const data = await res.json();
@@ -198,16 +237,11 @@ export default function FindWash() {
               <p className="font-semibold text-foreground text-sm mb-1">Search to find locations</p>
               <p className="text-xs text-muted-foreground">Enter a city, zip code, or tap "Near Me" to discover car washes in your area.</p>
             </div>
-          ) : filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-              <Car className="w-10 h-10 text-muted-foreground mb-3" />
-              <p className="font-semibold text-foreground text-sm mb-1">No locations within {radius} miles</p>
-              <p className="text-xs text-muted-foreground">Try increasing the radius or searching a different area.</p>
-            </div>
           ) : (
             <div>
               <div className="px-4 py-3 border-b border-border bg-muted/30">
-                <p className="text-sm font-semibold text-foreground">{filtered.length} location{filtered.length !== 1 ? 's' : ''} within {radius} mi</p>
+                <p className="text-sm font-semibold text-foreground">WashNow Partners ({filtered.length} within {radius} mi)</p>
+                <p className="text-xs text-muted-foreground">Book online and earn loyalty rewards</p>
               </div>
               {filtered.map(loc => (
                 <button key={loc.id} onClick={() => setSelectedLoc(loc)}
@@ -239,6 +273,53 @@ export default function FindWash() {
                     </Link>
                   </div>
                 </button>
+              ))}
+
+              {/* All car washes from web search */}
+              {(webLoading || webWashes.length > 0 || filtered.length === 0) && (
+                <div className="px-4 py-3 border-b border-border bg-muted/30">
+                  <p className="text-sm font-semibold text-foreground">All Car Washes in This Area</p>
+                  <p className="text-xs text-muted-foreground">Found around the web</p>
+                </div>
+              )}
+              {webLoading && (
+                <div className="flex items-center gap-2 px-4 py-4 text-sm text-muted-foreground">
+                  <Loader2 className="w-4 h-4 animate-spin" /> Finding nearby car washes...
+                </div>
+              )}
+              {!webLoading && filtered.length === 0 && webWashes.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-10 px-6 text-center">
+                  <Car className="w-10 h-10 text-muted-foreground mb-3" />
+                  <p className="font-semibold text-foreground text-sm mb-1">No car washes found within {radius} miles</p>
+                  <p className="text-xs text-muted-foreground">Try increasing the radius or searching a different area.</p>
+                </div>
+              )}
+              {webWashes.map((w, i) => (
+                <div key={i} className="px-4 py-4 border-b border-border">
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-sm text-foreground truncate">{w.name}</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">{w.address}</div>
+                      {(w.rating || w.phone) && (
+                        <div className="flex items-center gap-2 mt-1.5">
+                          {w.rating ? (
+                            <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full flex items-center gap-1">
+                              <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> {w.rating}
+                            </span>
+                          ) : null}
+                          {w.phone && <span className="text-xs text-muted-foreground">{w.phone}</span>}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <a href={`https://maps.google.com/?q=${encodeURIComponent(`${w.name} ${w.address}`)}`} target="_blank" rel="noopener noreferrer"
+                    className="block mt-3 text-center text-xs border border-border rounded-lg py-1.5 hover:bg-muted transition-colors text-muted-foreground font-medium">
+                    Directions
+                  </a>
+                </div>
               ))}
             </div>
           )}
